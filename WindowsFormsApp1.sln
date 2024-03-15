@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "WindowsFormsApp1\WindowsFormsApp1.csproj", "{474E9D41-A1E5-494B-B65C-8761E4C3AB81}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2F98CF93-E7EC-4FF5-B8E9-CAE3EF1D1574} = {2F98CF93-E7EC-4FF5-B8E9-CAE3EF1D1574}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageLibrary", "ImageLibrary\ImageLibrary.csproj", "{2F98CF93-E7EC-4FF5-B8E9-CAE3EF1D1574}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +26,14 @@ Global
 		{474E9D41-A1E5-494B-B65C-8761E4C3AB81}.Release|Any CPU.Build.0 = Release|Any CPU
 		{474E9D41-A1E5-494B-B65C-8761E4C3AB81}.Release|x64.ActiveCfg = Release|x64
 		{474E9D41-A1E5-494B-B65C-8761E4C3AB81}.Release|x64.Build.0 = Release|x64
+		{2F98CF93-E7EC-4FF5-B8E9-CAE3EF1D1574}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F98CF93-E7EC-4FF5-B8E9-CAE3EF1D1574}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F98CF93-E7EC-4FF5-B8E9-CAE3EF1D1574}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2F98CF93-E7EC-4FF5-B8E9-CAE3EF1D1574}.Debug|x64.Build.0 = Debug|Any CPU
+		{2F98CF93-E7EC-4FF5-B8E9-CAE3EF1D1574}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F98CF93-E7EC-4FF5-B8E9-CAE3EF1D1574}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F98CF93-E7EC-4FF5-B8E9-CAE3EF1D1574}.Release|x64.ActiveCfg = Release|Any CPU
+		{2F98CF93-E7EC-4FF5-B8E9-CAE3EF1D1574}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

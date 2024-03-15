@@ -110,5 +110,11 @@
       <Version>13.0.3</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImageLibrary\ImageLibrary.csproj">
+      <Project>{2f98cf93-e7ec-4ff5-b8e9-cae3ef1d1574}</Project>
+      <Name>ImageLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

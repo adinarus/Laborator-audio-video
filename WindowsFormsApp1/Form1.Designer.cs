@@ -167,7 +167,7 @@
             // 
             // buttonFiltering
             // 
-            this.buttonFiltering.Location = new System.Drawing.Point(22, 340);
+            this.buttonFiltering.Location = new System.Drawing.Point(69, 347);
             this.buttonFiltering.Name = "buttonFiltering";
             this.buttonFiltering.Size = new System.Drawing.Size(71, 36);
             this.buttonFiltering.TabIndex = 10;
@@ -178,7 +178,7 @@
             // checkBoxRed
             // 
             this.checkBoxRed.AutoSize = true;
-            this.checkBoxRed.Location = new System.Drawing.Point(22, 382);
+            this.checkBoxRed.Location = new System.Drawing.Point(69, 389);
             this.checkBoxRed.Name = "checkBoxRed";
             this.checkBoxRed.Size = new System.Drawing.Size(55, 20);
             this.checkBoxRed.TabIndex = 14;
@@ -188,7 +188,7 @@
             // checkBoxGreen
             // 
             this.checkBoxGreen.AutoSize = true;
-            this.checkBoxGreen.Location = new System.Drawing.Point(22, 408);
+            this.checkBoxGreen.Location = new System.Drawing.Point(69, 415);
             this.checkBoxGreen.Name = "checkBoxGreen";
             this.checkBoxGreen.Size = new System.Drawing.Size(66, 20);
             this.checkBoxGreen.TabIndex = 15;
@@ -198,7 +198,7 @@
             // checkBoxBlue
             // 
             this.checkBoxBlue.AutoSize = true;
-            this.checkBoxBlue.Location = new System.Drawing.Point(21, 434);
+            this.checkBoxBlue.Location = new System.Drawing.Point(68, 441);
             this.checkBoxBlue.Name = "checkBoxBlue";
             this.checkBoxBlue.Size = new System.Drawing.Size(56, 20);
             this.checkBoxBlue.TabIndex = 16;

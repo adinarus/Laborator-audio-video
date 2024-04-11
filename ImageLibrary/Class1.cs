@@ -7,6 +7,8 @@ using Emgu.CV.Structure;
 using Emgu.CV;
 using System.Windows.Forms;
 using Emgu.CV.UI;
+using static System.Windows.Forms.AxHost;
+using System.Drawing;
 
 namespace ImageLibrary
 {
@@ -25,8 +27,10 @@ namespace ImageLibrary
 
         public void ApplyGammaCorrection(double gamma)
         {
+
             if (OriginalImage != null)
             {
+                //if (ProcessedImage.GetImage.IsRoiSet()) { }
                 ProcessedImage._GammaCorrect(gamma);
             }
         }
@@ -69,6 +73,32 @@ namespace ImageLibrary
             if (OriginalImage != null)
             {
                 ProcessedImage = OriginalImage.Clone();
+            }
+        }
+
+        public void ScaleImage(float scale)
+        {
+            if (OriginalImage != null)
+            {
+                ProcessedImage = ProcessedImage.Resize(scale, Emgu.CV.CvEnum.Inter.Cubic);
+            }
+        }
+
+        public void ResizeImage(int width, int height)
+        {
+            if (OriginalImage != null)
+            {
+                ProcessedImage = ProcessedImage.Resize(width, height, Emgu.CV.CvEnum.Inter.Linear);
+            }
+        }
+
+        public void RotateImage(int angle)
+        {
+            var bgColor = Color.FromArgb(255, 255, 255);
+            Bgr bgr = new Bgr(bgColor);
+            if (OriginalImage != null)
+            {
+                ProcessedImage = ProcessedImage.Rotate(angle, bgr, true);
             }
         }
     }

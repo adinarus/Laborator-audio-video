@@ -13,6 +13,8 @@ using Emgu.CV.UI;
 using static System.Windows.Forms.AxHost;
 using ImageLibrary;
 using Emgu.CV.CvEnum;
+using System.Security.Cryptography;
+using System.IO;
 
 namespace WindowsFormsApp1
 {
@@ -28,8 +30,8 @@ namespace WindowsFormsApp1
         bool IsReadingFrame;
         VideoCapture capture;
 
-        private static VideoCapture cameraCapture;
-        private Image<Bgr, Byte> newBackgroundImage;
+        private static VideoCapture videoCapture;
+        private Image<Bgr, Byte> newBackgroundImage = new Image<Bgr, Byte>("C:\\Users\\Adi\\Desktop\\freddy.jpg");
         private static IBackgroundSubtractor fgDetector;
 
 
@@ -71,16 +73,60 @@ namespace WindowsFormsApp1
         private void button_gamma_Click(object sender, EventArgs e)
         {
             double gamma = (double)numericUpDownGamma.Value;
-            ImageProcessor.ApplyGammaCorrection(gamma);
-            pictureBox1.Image = ImageProcessor.ProcessedImage.ToBitmap();
+            
+
+
+            if (ImageProcessor.GetImage() != null)
+            {
+                
+                if (!ImageProcessor.GetImage().IsROISet)
+                {
+                    ImageProcessor.ApplyGammaCorrection(ImageProcessor.GetImage(), gamma);
+                    pictureBox1.Image = ImageProcessor.GetImage().ToBitmap();
+                }
+                else
+                {
+                    var img2 = ImageProcessor.GetImage().Copy();
+                    ImageProcessor.GetImage().SetValue(new Bgr(1,1,1));
+                    ImageProcessor.ApplyGammaCorrection(img2, gamma);
+                    ImageProcessor.GetImage()._Mul(img2);
+                    ImageProcessor.GetImage().ROI = Rectangle.Empty;
+                    pictureBox1.Image = ImageProcessor.GetImage().ToBitmap();
+                }
+            }
+            else
+            {
+                MessageBox.Show("You need to upload a picture first");
+            }
         }
 
         private void button_contrast_brightness_Click(object sender, EventArgs e)
         {
-            double alpha = (double)numericUpDownAlpha.Value;
-            double beta = (double)numericUpDownBeta.Value;
-            ImageProcessor.ApplyContrastBrightness(alpha, beta);
-            pictureBox1.Image = ImageProcessor.ProcessedImage.ToBitmap();
+            if (ImageProcessor.GetImage() != null)
+            {
+                double alpha = (double)numericUpDownAlpha.Value;
+                double beta = (double)numericUpDownBeta.Value;
+                if (!ImageProcessor.GetImage().IsROISet)
+                {
+                    var result = ImageProcessor.ApplyContrastBrightness(ImageProcessor.GetImage(), alpha, beta);
+                    pictureBox1.Image = result.ToBitmap();
+                }
+
+                else
+                {
+                    var ImageROI = ImageProcessor.GetImage().Copy();
+                    ImageProcessor.GetImage().SetValue(new Bgr(1, 1, 1));
+                    var result = ImageProcessor.ApplyContrastBrightness(ImageROI, alpha, beta);
+                    ImageProcessor.GetImage()._Mul(result);
+
+                    ImageProcessor.GetImage().ROI = Rectangle.Empty;
+                    pictureBox1.Image = ImageProcessor.GetImage().ToBitmap();
+                }
+            }
+            else
+            {
+                MessageBox.Show("You need to upload a picture first");
+            }
         }
 
         private void buttonReset_Click(object sender, EventArgs e)
@@ -108,49 +154,97 @@ namespace WindowsFormsApp1
                 b = 1;
             }
 
-            ImageProcessor.ApplyFilter(r,g,b);
-           
-            pictureBox1.Image = ImageProcessor.ProcessedImage.ToBitmap();
-        }
+            if (!ImageProcessor.GetImage().IsROISet)
+            {
+                ImageProcessor.ApplyFilter(ImageProcessor.GetImage(), r, g, b);
+                pictureBox1.Image = ImageProcessor.GetImage().ToBitmap();
+            }
+            else
+            {
 
-        private void buttonFilterRed_Click(object sender, EventArgs e)
-        {
-            ImageProcessor.ApplyFilter(1, 0, 0);
-            pictureBox1.Image = ImageProcessor.ProcessedImage.ToBitmap();
-        }
+                var img2 = ImageProcessor.GetImage().Copy();
+                ImageProcessor.GetImage().SetValue(new Bgr(1, 1, 1));
+                ImageProcessor.ApplyFilter(img2, r, g, b);
+                ImageProcessor.GetImage()._Mul(img2);
 
-        private void buttonFilterGreen_Click(object sender, EventArgs e)
-        {
-            ImageProcessor.ApplyFilter(0, 1, 0);
-            pictureBox1.Image = ImageProcessor.ProcessedImage.ToBitmap();
-        }
+                ImageProcessor.GetImage().ROI = Rectangle.Empty;
+                pictureBox1.Image = ImageProcessor.GetImage().ToBitmap();
+            }
 
-        private void buttonFilterBlue_Click(object sender, EventArgs e)
-        {
-            ImageProcessor.ApplyFilter(0, 0, 1);
-            pictureBox1.Image = ImageProcessor.ProcessedImage.ToBitmap();
+            
         }
-
+  
         private void buttonScale_Click(object sender, EventArgs e)
         {
             var scale = (float)numericUpDownResize.Value;
-            ImageProcessor.ScaleImage(scale);
-            pictureBox1.Image = ImageProcessor.ProcessedImage.ToBitmap();
+            //ImageProcessor.ScaleImage(scale);
+            pictureBox1.Image = ImageProcessor.GetImage().ToBitmap();
+
+            if (!ImageProcessor.GetImage().IsROISet)
+            {
+                var img = ImageProcessor.ScaleImage(ImageProcessor.GetImage(), scale);
+                pictureBox1.Image = img.ToBitmap();
+
+            }
+            else
+            {
+                var img2 = ImageProcessor.GetImage().Copy();
+                ImageProcessor.GetImage().SetValue(new Bgr(1, 1, 1));
+                var img = ImageProcessor.ScaleImage(img2, scale);
+
+                //ImageProcessor.GetImage()._Mul(img);
+
+                ImageProcessor.GetImage().ROI = Rectangle.Empty;
+                pictureBox1.Image = img.ToBitmap();
+            }
         }
 
         private void buttonResizeWidthHeight_Click(object sender, EventArgs e)
         {
             var width = (int)numericUpDownWidth.Value;
             var height = (int)numericUpDownHeight.Value;
-            ImageProcessor.ResizeImage(width, height);
-            pictureBox1.Image = ImageProcessor.ProcessedImage.ToBitmap();
+
+            if (!ImageProcessor.GetImage().IsROISet)
+            {
+                var img = ImageProcessor.ResizeImage(ImageProcessor.GetImage(), width, height);
+                pictureBox1.Image = img.ToBitmap();
+                
+            }
+            else
+            {
+                var img2 = ImageProcessor.GetImage().Copy();
+                ImageProcessor.GetImage().SetValue(new Bgr(1, 1, 1));
+                var img = ImageProcessor.ResizeImage(img2, width, height);
+                
+                //ImageProcessor.GetImage()._Mul(img);
+
+                ImageProcessor.GetImage().ROI = Rectangle.Empty;
+                pictureBox1.Image = img.ToBitmap();
+            }
+            
+            
         }
 
         private void buttonRotate_Click(object sender, EventArgs e)
         {
             var angle = (int)numericUpDownRotate.Value;
-            ImageProcessor.RotateImage(angle);
-            pictureBox1.Image = ImageProcessor.ProcessedImage.ToBitmap();
+            if (!ImageProcessor.GetImage().IsROISet)
+            {
+                var img = ImageProcessor.RotateImage(ImageProcessor.GetImage(), angle);
+                pictureBox1.Image = img.ToBitmap();
+
+            }
+            else
+            {
+                var img2 = ImageProcessor.GetImage().Copy();
+                ImageProcessor.GetImage().SetValue(new Bgr(1, 1, 1));
+                var img = ImageProcessor.RotateImage(img2, angle);
+                ImageProcessor.GetImage()._Mul(img);
+
+                ImageProcessor.GetImage().ROI = Rectangle.Empty;
+                pictureBox1.Image = ImageProcessor.GetImage().ToBitmap();
+            }
+
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
@@ -176,10 +270,9 @@ namespace WindowsFormsApp1
             if (pictureBox1.Image == null || rect == Rectangle.Empty)
             { return; }
 
-            var img = new Bitmap(pictureBox1.Image).ToImage<Bgr, byte>();
-            img.ROI = rect;
-            var imgROI = img.Copy();
-
+            //var img = new Bitmap(pictureBox1.Image).ToImage<Bgr, byte>();
+            ImageProcessor.GetImage().ROI = rect;
+            var imgROI = ImageProcessor.GetImage().Copy();
             pictureBox2.Image = imgROI.ToBitmap();
 
         }
@@ -190,8 +283,6 @@ namespace WindowsFormsApp1
             StartROI = e.Location;
 
         }
-
-     
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
@@ -216,10 +307,7 @@ namespace WindowsFormsApp1
                 TotalFrame = (int)capture.Get(CapProp.FrameCount);
                 Fps = capture.Get(CapProp.Fps);
                 FrameNo = 1;
-                //numericUpDown1.Value = FrameNo;
-                //numericUpDown1.Minimum = 0;
-                //numericUpDown1.Maximum = TotalFrame;
-
+               
             }
 
         }
@@ -234,6 +322,8 @@ namespace WindowsFormsApp1
             ReadAllFrames();
         }
 
+        
+
         private async void ReadAllFrames()
         {
 
@@ -247,6 +337,67 @@ namespace WindowsFormsApp1
                 label3.Text = FrameNo.ToString() + "/" + TotalFrame.ToString();
             }
         }
+        private void ProcessFrames(object sender, EventArgs e)
+        {
+
+            Mat frame = capture.QueryFrame();
+            Image<Bgr, byte> frameImage = frame.ToImage<Bgr, Byte>();
+            Mat foregroundMask = new Mat();
+            fgDetector.Apply(frame, foregroundMask);
+            var foregroundMaskImage = foregroundMask.ToImage<Gray, Byte>();
+            foregroundMaskImage = foregroundMaskImage.Not();
+
+            var copyOfNewBackgroundImage = newBackgroundImage.Resize(foregroundMaskImage.Width, foregroundMaskImage.Height, Inter.Lanczos4);
+            copyOfNewBackgroundImage = copyOfNewBackgroundImage.Copy(foregroundMaskImage);
+
+            foregroundMaskImage = foregroundMaskImage.Not();
+            frameImage = frameImage.Copy(foregroundMaskImage);
+            frameImage = frameImage.Or(copyOfNewBackgroundImage);
+
+            pictureBox1.Image = frameImage.ToBitmap();
+        }
+
+        async Task BlendImagesAsync()
+        {
+            string[] FileNames = Directory.GetFiles(@"C:\Users\Adi\Desktop\materiale an3\sem2\audiovideo\images", "*.jpg");
+            List<Image<Bgr, byte>> listImages = new List<Image<Bgr, byte>>();
+            foreach (var file in FileNames)
+            {
+                listImages.Add(new Image<Bgr, byte>(file));
+            }
+            for (int i = 0; i < listImages.Count - 1; i++)
+            {
+                for (double alpha = 0.0; alpha <= 1.0; alpha += 0.01)
+                {
+                    pictureBox1.Image = listImages[i + 1].AddWeighted(listImages[i], alpha, 1 - alpha, 0).AsBitmap();
+                    await Task.Delay(25);
+                }
+            }
+        }
+        private void buttonBlending_Click(object sender, EventArgs e)
+        {
+            BlendImagesAsync();
+
+        }
+
+        private void buttonBgSubstract_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                 
+                videoCapture = new VideoCapture();
+                fgDetector = new BackgroundSubtractorMOG2();
+                Application.Idle += ProcessFrames;
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+
+        }
+
 
     }
 

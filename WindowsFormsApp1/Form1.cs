@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using Emgu.CV.UI;
 using static System.Windows.Forms.AxHost;
 using ImageLibrary;
+using VideoLibrary;
 using Emgu.CV.CvEnum;
 using System.Security.Cryptography;
 using System.IO;
@@ -21,6 +22,9 @@ namespace WindowsFormsApp1
     public partial class Form1 : Form
     {
         private ImageProcessor ImageProcessor;
+        //private VideoProcessor VideoProcessor;
+        private VideoProcessor VideoProcessor;
+
         Rectangle rect; 
         Point StartROI; 
         bool MouseDown;
@@ -28,7 +32,10 @@ namespace WindowsFormsApp1
         int TotalFrame, FrameNo;
         double Fps;
         bool IsReadingFrame;
+        bool isBgSubstracted = false;
+        private bool isVideoPlaying = false;
         VideoCapture capture;
+        
 
         private static VideoCapture videoCapture;
         private Image<Bgr, Byte> newBackgroundImage = new Image<Bgr, Byte>("C:\\Users\\Adi\\Desktop\\freddy.jpg");
@@ -38,7 +45,8 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
-            ImageProcessor = new ImageProcessor();
+            ImageProcessor  = new ImageProcessor();
+            
         }
 
         private void button_image_upload_Click(object sender, EventArgs e)
@@ -177,7 +185,6 @@ namespace WindowsFormsApp1
         private void buttonScale_Click(object sender, EventArgs e)
         {
             var scale = (float)numericUpDownResize.Value;
-            //ImageProcessor.ScaleImage(scale);
             pictureBox1.Image = ImageProcessor.GetImage().ToBitmap();
 
             if (!ImageProcessor.GetImage().IsROISet)
@@ -191,9 +198,6 @@ namespace WindowsFormsApp1
                 var img2 = ImageProcessor.GetImage().Copy();
                 ImageProcessor.GetImage().SetValue(new Bgr(1, 1, 1));
                 var img = ImageProcessor.ScaleImage(img2, scale);
-
-                //ImageProcessor.GetImage()._Mul(img);
-
                 ImageProcessor.GetImage().ROI = Rectangle.Empty;
                 pictureBox1.Image = img.ToBitmap();
             }
@@ -270,7 +274,6 @@ namespace WindowsFormsApp1
             if (pictureBox1.Image == null || rect == Rectangle.Empty)
             { return; }
 
-            //var img = new Bitmap(pictureBox1.Image).ToImage<Bgr, byte>();
             ImageProcessor.GetImage().ROI = rect;
             var imgROI = ImageProcessor.GetImage().Copy();
             pictureBox2.Image = imgROI.ToBitmap();
@@ -294,67 +297,43 @@ namespace WindowsFormsApp1
                 }
             }
         }
+        private void UpdateFrameLabel(int currentFrame, int totalFrame)
+        {
+            label3.Text = $"{currentFrame}/{totalFrame}";
+        }
+
         private void buttonVideoUpload_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                capture = new VideoCapture(ofd.FileName);
+                VideoProcessor = new VideoProcessor(ofd.FileName);
                 Mat m = new Mat();
-                capture.Read(m);
-                pictureBox1.Image = m.ToBitmap();
-
-                TotalFrame = (int)capture.Get(CapProp.FrameCount);
-                Fps = capture.Get(CapProp.Fps);
-                FrameNo = 1;
-               
+                isVideoPlaying = true;
+                isBgSubstracted = false;
+                buttonPlayVideo.Text = "Pause";
+                VideoProcessor.StartPlayback(DisplayFrame, UpdateFrameLabel);
             }
 
         }
+       
 
         private void buttonPlayVideo_Click(object sender, EventArgs e)
         {
-            if (capture == null)
+            if (isVideoPlaying)
             {
-                return;
+                VideoProcessor.StopPlayback();
+                isVideoPlaying = false;
+                buttonPlayVideo.Text = "Play";
+                
             }
-            IsReadingFrame = true;
-            ReadAllFrames();
-        }
-
-        
-
-        private async void ReadAllFrames()
-        {
-
-            Mat m = new Mat();
-            while (IsReadingFrame == true && FrameNo < TotalFrame)
+            else
             {
-                FrameNo += 1;
-                var mat = capture.QueryFrame();
-                pictureBox1.Image = mat.ToBitmap();
-                await Task.Delay(1000 / Convert.ToInt16(Fps));
-                label3.Text = FrameNo.ToString() + "/" + TotalFrame.ToString();
+                isBgSubstracted = false;
+                VideoProcessor.StartPlayback(DisplayFrame, UpdateFrameLabel);
+                isVideoPlaying = true;
+                buttonPlayVideo.Text = "Pause";
             }
-        }
-        private void ProcessFrames(object sender, EventArgs e)
-        {
-
-            Mat frame = capture.QueryFrame();
-            Image<Bgr, byte> frameImage = frame.ToImage<Bgr, Byte>();
-            Mat foregroundMask = new Mat();
-            fgDetector.Apply(frame, foregroundMask);
-            var foregroundMaskImage = foregroundMask.ToImage<Gray, Byte>();
-            foregroundMaskImage = foregroundMaskImage.Not();
-
-            var copyOfNewBackgroundImage = newBackgroundImage.Resize(foregroundMaskImage.Width, foregroundMaskImage.Height, Inter.Lanczos4);
-            copyOfNewBackgroundImage = copyOfNewBackgroundImage.Copy(foregroundMaskImage);
-
-            foregroundMaskImage = foregroundMaskImage.Not();
-            frameImage = frameImage.Copy(foregroundMaskImage);
-            frameImage = frameImage.Or(copyOfNewBackgroundImage);
-
-            pictureBox1.Image = frameImage.ToBitmap();
         }
 
         async Task BlendImagesAsync()
@@ -380,27 +359,28 @@ namespace WindowsFormsApp1
 
         }
 
+        private void DisplayFrame(Image<Bgr, byte> frame)
+        {
+            pictureBox1.Image = frame.ToBitmap();
+
+        }
+        private void ProcessFrames(object sender, EventArgs e)
+        {
+            VideoProcessor.ProcessBgFrames(newBackgroundImage, DisplayFrame);
+        }
+        
         private void buttonBgSubstract_Click(object sender, EventArgs e)
         {
             try
             {
-                 
-                videoCapture = new VideoCapture();
-                fgDetector = new BackgroundSubtractorMOG2();
+                VideoProcessor.ApplyBackgroundSubtraction();
                 Application.Idle += ProcessFrames;
-                
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return;
             }
-
         }
 
-
     }
-
-
-
 }

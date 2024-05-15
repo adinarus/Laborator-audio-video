@@ -101,10 +101,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Emgu.CV.runtime.windows">
-      <Version>4.8.1.5350</Version>
+      <Version>4.9.0.5494</Version>
     </PackageReference>
     <PackageReference Include="Emgu.CV.UI">
-      <Version>4.8.1.5350</Version>
+      <Version>4.9.0.5494</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
@@ -114,6 +114,10 @@
     <ProjectReference Include="..\ImageLibrary\ImageLibrary.csproj">
       <Project>{2f98cf93-e7ec-4ff5-b8e9-cae3ef1d1574}</Project>
       <Name>ImageLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VideoLibrary\VideoLibrary.csproj">
+      <Project>{f0991330-b859-4c18-bcb5-659ea60b76d6}</Project>
+      <Name>VideoLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

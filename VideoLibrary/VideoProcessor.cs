@@ -16,7 +16,6 @@ namespace VideoLibrary
 {
     public class VideoProcessor
     {
-        
 
         private VideoCapture capture;
 
@@ -26,7 +25,7 @@ namespace VideoLibrary
         private int totalFrame;
         private int frameNo;
         private double fps;
-       
+
 
         public VideoProcessor(string filePath)
         {
@@ -56,7 +55,7 @@ namespace VideoLibrary
                 if (mat != null)
                 {
                     Image<Bgr, byte> frame = mat.ToImage<Bgr, byte>();
-       
+
                     frameProcessingAction?.Invoke(frame);
                 }
 
@@ -88,10 +87,9 @@ namespace VideoLibrary
         }
         public void ApplyBackgroundSubtraction()
         {
-           
+
             fgDetector = new BackgroundSubtractorMOG2();
 
         }
-
     }
 }

@@ -2,6 +2,7 @@
 using Emgu.CV.Structure;
 using Emgu.CV;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace ImageLibrary
 {
@@ -20,19 +21,42 @@ namespace ImageLibrary
         {
             return OriginalImage.Clone();
         }
+        
         public void LoadImage(string filePath)
         {
             OriginalImage = new Image<Bgr, byte>(filePath);
             ProcessedImage = OriginalImage.Clone();
         }
-
-        public void ApplyGammaCorrection(Image<Bgr, Byte> img, double gamma)
+        public void ResetImage()
         {
+            if (OriginalImage != null)
+            {
+                ProcessedImage = OriginalImage.Clone();
+            }
+        }
+        //public Image<Bgr, Byte> ConvertToGrayscale(Image<Bgr, byte> image)
+        //{
+        //for (int i = 0; i < image.Width / 2; i++)
+        //{
+        //    for (int j = 0; j < image.Height / 2; j++)
+        //    {
+        //        image[j, i] = new Bgr(Color.FromArgb(0, 255, 255, 255));
+        //    }
+        //}
+
+        //Image<Gray, byte> grayImage = image.Convert<Gray, byte>();
+        //return grayImage;
+        //}
+
+        public Image<Bgr, Byte> ApplyGammaCorrection(Image<Bgr, Byte> img, double gamma)
+        {
+
             img._GammaCorrect(gamma);
+            return img;
             
         }
 
-        public Image<Bgr, Byte> ApplyContrastBrightness(Image<Bgr, Byte> img, double alpha, double beta)
+        public Image<Bgr, Byte> ChangeBrightnessAndContrast(Image<Bgr, Byte> img, double alpha, double beta)
         {
 
             img = img.Mul(alpha) + beta;
@@ -60,13 +84,7 @@ namespace ImageLibrary
             }
             
         }
-        public void ResetImage()
-        {
-            if (OriginalImage != null)
-            {
-                ProcessedImage = OriginalImage.Clone();
-            }
-        }
+       
 
         public Image<Bgr, Byte> ResizeImage(Image<Bgr, Byte> img, int width, int height)
         {

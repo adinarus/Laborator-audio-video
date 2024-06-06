@@ -34,6 +34,7 @@ namespace ImageLibrary
                 ProcessedImage = OriginalImage.Clone();
             }
         }
+
         //public Image<Bgr, Byte> ConvertToGrayscale(Image<Bgr, byte> image)
         //{
         //for (int i = 0; i < image.Width / 2; i++)

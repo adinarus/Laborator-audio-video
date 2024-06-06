@@ -32,7 +32,7 @@ namespace WindowsFormsApp1
         private bool isImageUploaded = false;
         private bool isVideoPlaying = false;
         private Image<Bgr, Byte> newBackgroundImage = new Image<Bgr, Byte>("C:\\Users\\Adi\\Desktop\\freddy.jpg");
-
+        string logoPath = @"C:\Users\Adi\Desktop\materiale an3\sem2\audiovideo\videoLogo.jpg";
 
         public Form1()
         {
@@ -286,11 +286,19 @@ namespace WindowsFormsApp1
         {
             MouseDown = false;
             if (pictureBoxFull.Image == null || rect == Rectangle.Empty)
-            { return; }
+            { 
+                var img = new Image<Bgr, Byte>(logoPath);
+                //IDK?
+                return; 
+            }
 
-            ImageProcessor.GetImage().ROI = rect;
-            var imgROI = ImageProcessor.GetImage().Copy();
-            pictureBoxROI.Image = imgROI.ToBitmap();
+            else
+            {
+                ImageProcessor.GetImage().ROI = rect;
+                var imgROI = ImageProcessor.GetImage().Copy();
+                pictureBoxROI.Image = imgROI.ToBitmap();
+            }
+            
 
         }
 
@@ -323,9 +331,11 @@ namespace WindowsFormsApp1
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 VideoProcessor = new VideoProcessor(ofd.FileName);
+                string str = ofd.FileName;
                 Mat m = new Mat();
                 isVideoPlaying = true;
                 buttonPlayVideo.Text = "Pause";
+                VideoProcessor.SaveFirstFrameAsImage(str, logoPath);
                 VideoProcessor.StartPlayback(DisplayImage, UpdateFrameLabel);
             }
 
@@ -396,7 +406,7 @@ namespace WindowsFormsApp1
 
         private void buttonSaveVideo_Click(object sender, EventArgs e)
         {
-            string logoPath = @"C:\Users\Adi\Desktop\materiale an3\sem2\audiovideo\videoLogo.jpg";
+           
             string sourcePath = @"C:\Users\Adi\Desktop\materiale an3\sem2\audiovideo\DragonDancing.mp4";
             string destinationPath = @"C:\Users\Adi\Desktop\materiale an3\sem2\audiovideo\DragonDancingCopy.mp4";
 
@@ -452,6 +462,10 @@ namespace WindowsFormsApp1
 
         }
 
-
+        private void buttonAudio_Click(object sender, EventArgs e)
+        {
+            var Form2 = new Form2();
+            Form2.Show();
+        }
     }
 }

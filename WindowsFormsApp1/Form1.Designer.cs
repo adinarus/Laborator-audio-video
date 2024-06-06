@@ -60,6 +60,7 @@
             this.labelMessage = new System.Windows.Forms.Label();
             this.buttonTransition = new System.Windows.Forms.Button();
             this.comboBoxTransition = new System.Windows.Forms.ComboBox();
+            this.buttonAudio = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxFull)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAlpha)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownBeta)).BeginInit();
@@ -472,11 +473,22 @@
             this.comboBoxTransition.Size = new System.Drawing.Size(121, 24);
             this.comboBoxTransition.TabIndex = 37;
             // 
+            // buttonAudio
+            // 
+            this.buttonAudio.Location = new System.Drawing.Point(785, 920);
+            this.buttonAudio.Name = "buttonAudio";
+            this.buttonAudio.Size = new System.Drawing.Size(153, 58);
+            this.buttonAudio.TabIndex = 38;
+            this.buttonAudio.Text = "Audio Editor";
+            this.buttonAudio.UseVisualStyleBackColor = true;
+            this.buttonAudio.Click += new System.EventHandler(this.buttonAudio_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 1055);
+            this.Controls.Add(this.buttonAudio);
             this.Controls.Add(this.comboBoxTransition);
             this.Controls.Add(this.buttonTransition);
             this.Controls.Add(this.labelMessage);
@@ -561,6 +573,7 @@
         private System.Windows.Forms.Label labelMessage;
         private System.Windows.Forms.Button buttonTransition;
         private System.Windows.Forms.ComboBox comboBoxTransition;
+        private System.Windows.Forms.Button buttonAudio;
     }
 }
 
